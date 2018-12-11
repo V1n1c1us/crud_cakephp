@@ -2,7 +2,11 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
-
+use \Carbon\Carbon;
+use \Carbon\CarbonImmutable;
+use Cake\ORM\ClientesTable;
+use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 /**
  * Clientes Controller
  *
@@ -20,15 +24,15 @@ class ClientesController extends AppController
      */
     public function index()
     {
-        $start_date = $this->request->query('start_date');
-        $end_date = $this->request->query('end_date');
+        $data_inicial = $this->request->query('data_inicial');
+        $data_final = $this->request->query('data_final');
 
         $conditions = [];
-        if($start_date && $end_date)
+        if($data_inicial && $data_final)
         {
             $conditions[] = [
-                'DATE(clientes.created) >=' => $start_date,
-                'DATE(clientes.created) <=' => $end_date
+                'DATE(clientes.created) >=' => $data_inicial,
+                'DATE(clientes.created) <=' => $data_final
             ];
         }
 
@@ -45,8 +49,6 @@ class ClientesController extends AppController
      * View method
      *
      * @param string|null $id Cliente id.
-     * @return \Cake\Http\Response|void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null)
     {
@@ -60,7 +62,6 @@ class ClientesController extends AppController
     /**
      * Add method
      *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add()
     {
@@ -81,8 +82,6 @@ class ClientesController extends AppController
      * Edit method
      *
      * @param string|null $id Cliente id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit($id = null)
     {
@@ -92,11 +91,11 @@ class ClientesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $cliente = $this->Clientes->patchEntity($cliente, $this->request->getData());
             if ($this->Clientes->save($cliente)) {
-                $this->Flash->success(__('The cliente has been saved.'));
+                $this->Flash->success(__('Cliente Salvo com Sucesso.'));
 
                 return $this->redirect(['action' => 'index']);
             }
-            $this->Flash->error(__('The cliente could not be saved. Please, try again.'));
+            $this->Flash->error(__('Ops! Erro ao salvar o cliente.'));
         }
         $this->set(compact('cliente'));
     }
@@ -105,19 +104,27 @@ class ClientesController extends AppController
      * Delete method
      *
      * @param string|null $id Cliente id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
         $cliente = $this->Clientes->get($id);
         if ($this->Clientes->delete($cliente)) {
-            $this->Flash->success(__('The cliente has been deleted.'));
+            $this->Flash->success(__('Cliente Deletado com sucesso.'));
         } else {
-            $this->Flash->error(__('The cliente could not be deleted. Please, try again.'));
+            $this->Flash->error(__('Ops! Erro ao deletar o cliente.'));
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function analise()
+    {
+        $this->loadModel('Clientes');
+
+        $registerOfMonth = $this->Clientes->find()->where('MONTH(created) = MONTH(NOW())')->count();
+        $registerOfDay = $this->Clientes->find()->where('created = CURDATE()')->count();
+
+        $this->set(compact('registerOfDay','registerOfMonth'));
     }
 }

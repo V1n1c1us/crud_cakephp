@@ -4,28 +4,18 @@
  * @var \App\Model\Entity\Cliente[]|\Cake\Collection\CollectionInterface $clientes
  */
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Cliente'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="clientes index large-9 medium-8 columns content">
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Primary Box Example</h3>
-        </div><!-- /.box-header -->
-        <div class="box-body">
-            <?= $clientes->count()?>
-        </div><!-- /.box-body -->
-    </div>
     <h3><?= __('Clientes') ?></h3>
 
     <?= $this->Form->create('cliente', ['type' => 'get']); ?>
-    <?= $this->Form->control('start_date', ['class' => 'datepicker','value' => $this->request->query('start_date')]);?>
-    <?= $this->Form->control('end_date', ['class' => 'datepicker', 'value' => $this->request->query('end_date')]);?>
-    <button>search</button>
+        <div class="input-group mb-2 mr-sm-2">
+            <?= $this->Form->control('data_inicial', ['class' => 'form-control mb-2 mr-sm-2 datepicker','value' => $this->request->query('data_inicial')]);?>
+        </div>
+        <div class="input-group mb-2 mr-sm-2">
+        <?= $this->Form->control('data_final', ['class' => 'form-control mb-2 mr-sm-2 datepicker', 'value' => $this->request->query('data_final')]);?>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
     <?= $this->Form->end();?>
+    <?= $clientes->count();?>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>

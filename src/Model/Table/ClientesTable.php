@@ -64,4 +64,8 @@ class ClientesTable extends Table
 
         return $validator;
     }
+
+    function getAnalise() {
+        return $this->query('SELECT created FROM clientes WHERE created = Raposo' );
+      }
 }

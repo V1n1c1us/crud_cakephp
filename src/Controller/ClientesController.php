@@ -37,7 +37,8 @@ class ClientesController extends AppController
         }
 
         $this->paginate = [
-            'conditions' => $conditions
+            'conditions' => $conditions,
+            'maxLimit' => 6
         ];
 
         $clientes = $this->paginate($this->Clientes);
